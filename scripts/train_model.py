@@ -17,7 +17,10 @@ import argparse
 
 
 #TODO: Import dependencies for Debugging andd Profiling
-import smdebug.pytorch as smd
+try:
+    import smdebug.pytorch as smd
+except:
+    pass
 
 def test(model, test_loader, criterion, device, hook):
     '''
@@ -119,6 +122,14 @@ def net():
     model.fc = nn.Linear(num_inputs, num_classes)
     
     return model
+
+#-----------------------------------------------------------------------------------------------------------
+def model_fn(model_dir):
+    model = net()
+    with open(os.path.join(model_dir, 'model.pth'), 'rb') as f:
+        model.load_state_dict(torch.load(f))
+    return model
+#------------------------------------------------------------------------------------------------------------
 
 def create_data_loaders(data, batch_size):
     '''
