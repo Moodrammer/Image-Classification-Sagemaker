@@ -117,6 +117,9 @@ def create_data_loaders(data , batch_size):
     return dataloaders
 #----------------------------------------------------------------------------------------------
 def main(args):
+    # logging the used hyperparameters
+    print(f"Hyperparameters selected : /n#epochs : {args.epochs}\nBatch Size : {args.batch_size}\nLearning Rate : {args.lr}")
+    
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     '''
     TODO: Initialize a model by calling the net function
@@ -164,6 +167,7 @@ def main(args):
 
     dataloaders = create_data_loaders(image_datasets , args.batch_size)
     train_loader = dataloaders['train']
+#     train_loader = dataloaders['valid']
     valid_loader = dataloaders['valid']
     test_loader = dataloaders['test']
 
@@ -181,8 +185,8 @@ def main(args):
     '''
     TODO: Save the trained model
     '''
-    path = args.model_dir
-    torch.save(model, path)
+    path = os.path.join(args.model_dir, 'model.pth')
+    torch.save(model.state_dict(), path)
 #-------------------------------------------------------------------------------------------------------
 if __name__=='__main__':
     parser=argparse.ArgumentParser()
@@ -194,9 +198,9 @@ if __name__=='__main__':
     parser.add_argument(
         "--epochs",
         type=int,
-        default=14,
+        default=1,
         metavar="E",
-        help="number of epochs to train (default: 14)",
+        help="number of epochs to train (default: 1)",
     )
     # batch_size
     parser.add_argument(
