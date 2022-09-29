@@ -1,15 +1,42 @@
 # Image Classification using AWS SageMaker
 
-Use AWS Sagemaker to train a pretrained model that can perform image classification by using the Sagemaker profiling, debugger, hyperparameter tuning and other good ML engineering practices. This can be done on either the provided dog breed classication data set or one of your choice.
+Use AWS Sagemaker to train a pretrained model that can perform image classification by using the Sagemaker profiling, debugger, hyperparameter tuning and other good ML engineering practices.
+
+The goal of this project is to demonstrate how we can use a pretrained image classification model to classify the dog breed given an image of the dog. This is done by loading the pretrained model then using transfer learning we adapt the model to the dog breed classification dataset.
 
 ## Project Set Up and Installation
 Enter AWS through the gateway in the course and open SageMaker Studio. 
 Download the starter files.
-Download/Make the dataset available. 
+Download/Make the dataset available.
+
+### Steps to Set Up and run the project
+- Open the AWS sagemaker console.
+- Navigate to Notebook instances & create a Notebook instance (I used ```ml.t3.medium``` instance for hosting the notebook)
+- Upload the following files to the instance:
+    - ```train_and_deploy.ipynb``` : notebook for interfacing with sagemaker & downloading the dataset.
+    - ```scripts/train_model.py``` : script for training the model with debugging & profilling hooks.
+    - ```scripts/hpo.py``` : script for training the model without debugging & profilling hooks for hyperparameter tuning.
+    - ```scripts/inference.py``` : script for model deployment to an endpoint.
+- I used the ```conda_pytorch_p38``` kernel for running the notebook
+- Run the notebook cells to download the data, upload it to s3, launch the hyperparameter tuning job, launch the training job, display the debugging & profilling outputs & finally deployment and querying the model.
 
 ## Dataset
-The provided dataset is the dogbreed classification dataset which can be found in the classroom.
-The project is designed to be dataset independent so if there is a dataset that is more interesting or relevant to your work, you are welcome to use it to complete the project.
+- The Dataset Contains images of dogs of different breeds.
+- There are 133 classes of dog breeds available.
+- The Dataset is split into three directories train, validation and testing.
+- Each Directory has 133 sub directories, one directory per dog breed class.
+
+!['dataset-distribution'](screenshots/dataset-distribution.png)
+
+***From a quick eda it is clear that:***
+- not all classes have the same number of images for train, test & validation.
+- Most of the classes have on average 50 train images, 6 validation images, and 6 test images.
+- The dataset isn't completely imbalanced with respect to the # of images in each class.
+
+***From a Quick manual exploration it is clear that:***
+- Not all images have the same shape.
+- Some images are too big.
+
 
 ### Access
 Upload the data to an S3 bucket through the AWS Gateway so that SageMaker has access to the data. 
@@ -63,29 +90,29 @@ The metric used for choosing the best hyperparameters is the epoch test loss cal
 
 A screenshot showing the completed hyperparamter tuning job.
 
-![tuning job completed screenshot](screenshots\tuning-job-completed.PNG)
+![tuning job completed screenshot](screenshots/tuning-job-completed.PNG)
 
 A screenshot showing the 3 completed training jobs & their final test losses.
 
-![tuning training jobs completed screenshot](screenshots\tuning-train-jobs-completed.PNG)
+![tuning training jobs completed screenshot](screenshots/tuning-train-jobs-completed.PNG)
 
 
 A screenshot showing the logged train, valid and test accuracies & losses from Cloudwatch logs
 - first job
 
-![job-1-logs](screenshots\job-1-logs.PNG)
+![job-1-logs](screenshots/job-1-logs.PNG)
 
 - second job (best)
 
-![job-2-logs](screenshots\job-2-logs.PNG)
+![job-2-logs](screenshots/job-2-logs.PNG)
 
 - third job
 
-![job-3-logs](screenshots\job-3-logs.PNG)
+![job-3-logs](screenshots/job-3-logs.PNG)
 ### Best Hyperparameters
 A screenshot from the AWS Console showing the best training job according to the test loss and the best hyperparameters chosen for that job.
 
-![hyperparameters-for-best-job](screenshots\hyperparameters-for-best-job.PNG)
+![hyperparameters-for-best-job](screenshots/hyperparameters-for-best-job.PNG)
 
 
 ## Debugging and Profiling
@@ -156,7 +183,7 @@ profiler_config = ProfilerConfig(
 
 The following is screenshot of tracking the ```cross_entropy_loss_output``` during training and evaluation steps.
 
-!['cross_entropy_plot'](screenshots\cross_entropy_plot.png)
+!['cross_entropy_plot'](screenshots/cross_entropy_plot.png)
 
 **Insights from the Plot**
 - The training loss decreases with the number of steps.
@@ -170,7 +197,6 @@ Inorder to avoid overfitting we might try the following solutions:
 - Maybe I need more data for my model.
 
 ## Model Deployment
-**TODO**: Give an overview of the deployed model and instructions on how to query the endpoint with a sample input.
 
 ### Overview on the deployed Model
 - The deployed model is a ```resnet50``` model pretrained on the ImageNet dataset and finetuned using the dog breed classification dataset.
@@ -180,7 +206,7 @@ Inorder to avoid overfitting we might try the following solutions:
 - The model was finetuned for 1 epoch using a batch size of 128 and learning rate ~0.05.
 
 ### Screenshot of the deployed endpoint in service
-!['Deployment'](screenshots\Deployment.png)
+!['Deployment'](screenshots/Deployment.png)
 
 The model is deployed on one instance of ```ml.t2.medium```
 ### Instructions to Query the model
@@ -217,7 +243,7 @@ response = predictor.predict(image)
 ### Example
 - Input image
 
-!['Affenpinscher_00058'](screenshots\Affenpinscher_00058.jpg)
+!['Affenpinscher_00058'](screenshots/Affenpinscher_00058.jpg)
 
 - Response
 ```python
@@ -251,7 +277,3 @@ response = predictor.predict(image)
 lenght of response : 133
 ```
 
-**TODO** Remember to provide a screenshot of the deployed active endpoint in Sagemaker.
-
-## Standout Suggestions
-**TODO (Optional):** This is where you can provide information about any standout suggestions that you have attempted.
