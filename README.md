@@ -104,11 +104,11 @@ A screenshot showing the logged train, valid and test accuracies & losses from C
 
 - second job (best)
 
-![job-2-logs](screenshots/job-2-logs.PNG)
+![job-2-logs](screenshots/job-2-logs.png)
 
 - third job
 
-![job-3-logs](screenshots/job-3-logs.PNG)
+![job-3-logs](screenshots/job-3-logs.png)
 ### Best Hyperparameters
 A screenshot from the AWS Console showing the best training job according to the test loss and the best hyperparameters chosen for that job.
 
@@ -274,6 +274,6 @@ response = predictor.predict(image)
    -7.10544109  -2.48531008  -1.50545609  -6.91559172   3.5340507
    -7.34921312  -0.98429281  -6.50257587  -2.30569077  -3.86719155
     6.00153255  -2.73402333   0.19892243]]
-lenght of response : 133
+length of response : 133
 ```
 
